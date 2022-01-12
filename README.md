@@ -31,6 +31,13 @@ Help can be seen here:
 ItemsExperimental -help
 ```
 
+## Known issues
+
+* path extraction
+* some items are missing some information, need to fill with defaults.
+* Not for RELEASE as of yet. (Getting close...)
+
+
 ## Authors
 
 CatMeat
