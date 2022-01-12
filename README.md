@@ -1,44 +1,39 @@
-﻿# Project Title
+﻿# ItemsExperimental
 
-Simple overview of use/purpose.
+Simple windows console application to extract information needed to create the itemsexperimental.txt file for RustAdmin
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+RustAdmin needs a text file containing items that may be spawned by an admin. This text file, itemsexperimental.txt, should be be checked and updated as neeeded when a new Rust Dedicated Server is released. This console application should allow for a quick and easy method to generate this file on demand.
 
 ## Getting Started
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* No dependancies required.
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* ItemsExperimental may be placed anywhere.
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* ItemsExperimental option <path to rust dedicated server>
+* example: 
 ```
-code blocks for commands
+ItemsExperimental -extract "C:\rustserver"
 ```
 
 ## Help
 
-Any advise for common problems or issues.
+Help can be seen here:
 ```
-command to run if program contains helper info
+ItemsExperimental -help
 ```
 
 ## Authors
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+CatMeat
 
 ## Version History
 
@@ -50,13 +45,8 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the LICENSE.md file for details
 
 ## Acknowledgments
 
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+* [RustAdmin](https://www.rustadmin.com/)
