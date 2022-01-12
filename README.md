@@ -1,6 +1,6 @@
 ﻿# ItemsExperimental
 
-Simple windows console application to extract information needed to create the itemsexperimental.txt file for RustAdmin
+Simple windows console application to extract information needed to create the itemsexperimental.txt file for RustAdmin.
 
 ## Description
 
@@ -18,7 +18,7 @@ RustAdmin needs a text file containing items that may be spawned by an admin. Th
 
 ### Executing program
 
-* ItemsExperimental option <path to rust dedicated server>
+* ItemsExperimental option "path\to\rust\dedicated\server"
 * example: 
 ```
 ItemsExperimental -extract "C:\rustserver"
