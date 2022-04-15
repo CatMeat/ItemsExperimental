@@ -137,7 +137,7 @@ namespace ExtractRustItems
 
         private static void CreateOutput()
         {
-            Console.WriteLine($"ExtractRustItems.exe created by CatMeat, (c) 2020");
+            Console.WriteLine($"ExtractRustItems.exe created by CatMeat, v0.3 (c) 2020");
             Console.WriteLine($"    Processed {ValidJsonFiles} item files.");
             if (!File.Exists(ChangesFilename))
             {
