@@ -4,13 +4,13 @@ Simple windows console application to extract information needed to create the i
 
 ## Description
 
-RustAdmin needs a text file containing items that may be spawned by an admin. This text file, itemsexperimental.txt, should be be checked and updated as neeeded when a new Rust Dedicated Server is released. This console application should allow for a quick and easy method to generate this file on demand.
+RustAdmin needs a text file containing items that may be spawned by an admin. This text file, itemsExperimental.txt, should be be checked and updated as neeeded when a new Rust Dedicated Server is released. This console application should allow for a quick and easy method to generate this file on demand.
 
 ## Getting Started
 
 ### Dependencies
 
-* No dependancies required.
+* Newtonsoft.Json.dll
 
 ### Installing
 
@@ -18,24 +18,16 @@ RustAdmin needs a text file containing items that may be spawned by an admin. Th
 
 ### Executing program
 
-* ItemsExperimental option "path\to\rust\dedicated\server"
+* ItemsExperimental "path\to\rust\dedicated\server"
 * example: 
 ```
-ItemsExperimental -extract "C:\rustserver"
+ItemsExperimental "C:\rustserver"
 ```
 
-## Help
-
-Help can be seen here:
-```
-ItemsExperimental -help
-```
 
 ## Known issues
 
-* path extraction
-* some items are missing some information, need to fill with defaults.
-* Not for RELEASE as of yet. (Getting close...)
+* none reported
 
 
 ## Authors
@@ -44,6 +36,8 @@ CatMeat
 
 ## Version History
 
+* 0.3
+    * Major overhaul and refactor
 * 0.2
     * Various bug fixes and optimizations
     * See [commit change]() or See [release history]()
