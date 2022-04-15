@@ -1,23 +1,41 @@
 ﻿using Newtonsoft.Json;
+
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace ExtractRustIems
+namespace ExtractRustItems
 {
+    /*
+     * 
+     * 
+     * 
+     * 
+     */
     class Program
     {
         public const string OutputFileName = "itemsExperimental.txt";
-        public const string InvalidArguments = "    Invalid number of arguments!";
+        public const string InvalidArguments = "    Missing path to JSON files!";
         public const string InvalidCommand = "Invalid command!";
-        public const string HelpMessage = "    Usage: ItemsExperimental -extract <path to item json files>";
         public const string NothingFound = @"    No valid json files were found at {0}";
         public const string SuccessMessage = @"    {0} items saved to {1}";
 
         static string[] Filenames;
         static string[] ItemLines;
-        static string JsonFilePath = "";
+        static string FullFilePath = "";
+
+        static readonly string JsonFilePath = @"Bundles\items";
+        static readonly string PreviousItemsFilename = "RustItems.json";
+        static readonly string ChangesFilename = "Changes.txt";
+
+        static int NewItems = 0;
         static int ValidJsonFiles;
+
+        static Dictionary<string, RustItem> CurrentItems;
+        static Dictionary<string, RustItem> PreviousRustItems;
+
 
         static void Main(string[] args)
         {
@@ -27,36 +45,7 @@ namespace ExtractRustIems
                 return;
             }
 
-            var command = args[0];
-
-            switch (command)
-            {
-                case "extract":
-                case "/e":
-                case "/extract":
-                case "-e":
-                case "-extract":
-                case "--extract":
-                    ExtractMain(args);
-                    break;
-
-                case "?":
-                case "/h":
-                case "/help":
-                case "-h":
-                case "-help":
-                case "--help":
-                    DisplayHelp();
-                    break;
-                default:
-                    Console.WriteLine(InvalidCommand);
-                    break;
-            }
-        }
-
-        private static void ExtractMain(string[] args)
-        {
-            GetPath(args);
+            GetPath(args[0]);
             GetFileNames();
             if (Filenames.Length == 0)
             {
@@ -65,68 +54,128 @@ namespace ExtractRustIems
             }
 
             ProcessFiles();
+            SaveNewItems();
+            Array.Sort(ItemLines);
             CreateOutput();
         }
 
-        private static void GetPath(string[] args)
+        private static void GetPath(string serverFilePath)
         {
-            if (args[1] == null)
+            if (String.IsNullOrEmpty(serverFilePath))
             {
-                JsonFilePath = Environment.CurrentDirectory;
+                FullFilePath = Environment.CurrentDirectory;
             }
             else
             {
-                JsonFilePath = args[1].Trim();
-            }
-        }
+                FullFilePath = serverFilePath.Trim();
+                if (!FullFilePath.EndsWith(@"\"))
+                {
+                    FullFilePath += @"\";
+                }
 
-        private static void DisplayHelp()
-        {
-            JsonFilePath = "";
-            Console.WriteLine(HelpMessage);
+                FullFilePath += JsonFilePath;
+            }
         }
 
         private static void GetFileNames()
         {
-            string[] Filenames = Directory.GetFiles(JsonFilePath, "*.json");
+            Filenames = Directory.GetFiles(FullFilePath, "*.json");
         }
 
         private static void ProcessFiles()
         {
-            ItemLines = new string[Filenames.Length];
+            if (File.Exists(ChangesFilename))
+            {
+                File.Delete(ChangesFilename);
+            }
 
+            CurrentItems = new Dictionary<string, RustItem>();
+            PreviousRustItems = new Dictionary<string, RustItem>();
+            ItemLines = new string[Filenames.Length];
             int FilesExamined = 0;
             ValidJsonFiles = 0;
+
+            if (File.Exists(PreviousItemsFilename))
+            {
+                string contents = File.ReadAllText(PreviousItemsFilename);
+                PreviousRustItems = JsonConvert.DeserializeObject<Dictionary<string, RustItem>>(contents);
+            }
+
             foreach (var fileName in Filenames)
             {
                 string contents = File.ReadAllText(fileName);
                 RustItem NewRustItem = JsonConvert.DeserializeObject<RustItem>(contents);
-                if (NewRustItem.shortname != null)
+                CurrentItems.Add(NewRustItem.shortname, NewRustItem);
+                if (!PreviousRustItems.ContainsKey(NewRustItem.shortname))
                 {
+                    ++NewItems;
+                    string content = String.Format($"{NewRustItem.shortname} was added");
+                    File.AppendAllText(ChangesFilename, content + Environment.NewLine);
+                }
+
+
+                if (!String.IsNullOrEmpty(NewRustItem.shortname))
+                {
+                    if (String.IsNullOrEmpty(NewRustItem.Name))
+                    {
+                        NewRustItem.Name = TitleCase(NewRustItem.shortname.Replace('.', ' '));
+                    }
+
                     string NewItemLine = $"{NewRustItem.Category} - {NewRustItem.Name}|{NewRustItem.shortname}";
                     ItemLines[ValidJsonFiles] = NewItemLine;
-                    ValidJsonFiles += 1;
+                    ++ValidJsonFiles;
                 }
-                FilesExamined += 1;
+                ++FilesExamined;
             }
+        }
 
-            Console.WriteLine(@"Processed {0} of {1} item files", ValidJsonFiles, FilesExamined);
+        private static void SaveNewItems()
+        {
+            string json = JsonConvert.SerializeObject(CurrentItems, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(PreviousItemsFilename, json);
         }
 
         private static void CreateOutput()
         {
-            Array.Sort(ItemLines);
+            Console.WriteLine($"ExtractRustItems.exe created by CatMeat, (c) 2020");
+            Console.WriteLine($"    Processed {ValidJsonFiles} item files.");
+            if (!File.Exists(ChangesFilename))
+            {
+                File.AppendAllText(ChangesFilename, "No changes found on last run." + Environment.NewLine);
+            }
+
             if (ValidJsonFiles > 0)
             {
+                if (File.Exists(OutputFileName))
+                {
+                    File.Copy(OutputFileName, OutputFileName + ".last", true);
+                }
+
                 File.WriteAllLines(OutputFileName, ItemLines);
                 Console.WriteLine(SuccessMessage, ItemLines.Count().ToString(), OutputFileName);
             }
             else
             {
-                Console.WriteLine(NothingFound, JsonFilePath);
+                Console.WriteLine(NothingFound, FullFilePath);
+            }
+
+            if (NewItems > 0)
+            {
+                Console.WriteLine($"    {NewItems} items added since last run! See Changes.txt");
+            }
+            else
+            {
+                Console.WriteLine("    No new items were found since last run.");
             }
         }
+
+        private static string TitleCase(string variableCase)
+        {
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            return textInfo.ToTitleCase(variableCase.ToLower());
+        }
     }
+
     public class Condition
     {
         public bool enabled { get; set; }
@@ -154,5 +203,4 @@ namespace ExtractRustIems
         public bool isUsable { get; set; }
         public bool HasSkins { get; set; }
     }
-
 }
