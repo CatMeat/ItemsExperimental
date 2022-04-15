@@ -8,12 +8,6 @@ using System.Linq;
 
 namespace ExtractRustItems
 {
-    /*
-     * 
-     * 
-     * 
-     * 
-     */
     class Program
     {
         public const string OutputFileName = "itemsExperimental.txt";

@@ -1,4 +1,4 @@
-﻿# ItemsExperimental
+﻿# ExtractRustItems
 
 Simple windows console application to extract information needed to create the itemsexperimental.txt file for RustAdmin.
 
@@ -14,14 +14,18 @@ RustAdmin needs a text file containing items that may be spawned by an admin. Th
 
 ### Installing
 
-* ItemsExperimental may be placed anywhere.
+* ExtractRustItems may be placed anywhere. itemsExperimental.txt and Changes.txt will be saved to the active folder.
 
 ### Executing program
 
-* ItemsExperimental "path\to\rust\dedicated\server"
+* ExtractRustItems "path\to\rust\dedicated\server"
 * example: 
 ```
-ItemsExperimental "C:\rustserver"
+ExtractRustItems C:\rustserver
+```
+if your path contains spaces, surround it with  quotes.
+```
+ExtractRustItems "C:\rust server"
 ```
 
 
